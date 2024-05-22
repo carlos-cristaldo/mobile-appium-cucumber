@@ -1,2 +1,3 @@
-hellocucumber/StepDefinitions.class
-hellocucumber/RunCucumberTest.class
+AppCucumber/tests/AppTests.class
+AppCucumber/RunCucumberTest.class
+AppCucumber/StepDefinitions.class

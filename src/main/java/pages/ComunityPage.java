@@ -1,4 +1,4 @@
-package hellocucumber.pages;
+package pages;
 
 import io.appium.java_client.pagefactory.AndroidFindBy;
 import io.appium.java_client.pagefactory.AppiumFieldDecorator;
@@ -8,16 +8,23 @@ import org.openqa.selenium.support.PageFactory;
 
 import java.time.Duration;
 
-public class LandingPage {
+public class ComunityPage {
 
-    @AndroidFindBy(uiAutomator = "new UiSelector().text(\"Play Video\")")
-    private WebElement videoElement;
+    @AndroidFindBy(uiAutomator = "new UiSelector().text(\"Hivebrite\")")
+    private WebElement hiveBriteButton;
 
-    public LandingPage(WebDriver driver) {
+
+
+    public ComunityPage(WebDriver driver) {
         PageFactory.initElements(new AppiumFieldDecorator(driver, Duration.ofSeconds(5)), this);
     }
 
-    public Boolean isVideoDisplayed(){
-        return videoElement.isDisplayed();
+    public void clickOnHiveBriteButton(){
+        System.out.println(hiveBriteButton.isDisplayed());
+        hiveBriteButton.click();
     }
+
+
+
+
 }
