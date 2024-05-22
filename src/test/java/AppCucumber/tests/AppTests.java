@@ -1,26 +1,28 @@
 package AppCucumber.tests;
 
 import cucumber.api.CucumberOptions;
+import io.appium.java_client.android.AndroidStartScreenRecordingOptions;
 import model.User;
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.slf4j.Logger;
+import pages.Base.PageBase;
 import pages.ComunityPage;
 import pages.DashboardPage;
 import pages.LandingPage;
 import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.android.AndroidStartScreenRecordingOptions;
-import io.appium.java_client.android.options.UiAutomator2Options;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import org.junit.runner.RunWith;
 import org.junit.runner.Runner;
 
-import java.io.File;
-
-import org.apache.commons.io.FileUtils;
 import pages.LoginPage;
+import pages.carrousel.StudentExperiencePage;
+import pages.carrousel.WhatWeOfferPage;
+import utils.Constants;
 import utils.MyLogger;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -31,8 +33,11 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
+import java.util.Objects;
 
 
+import static extended.selenium.MobileActions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static utils.Utils.*;
 
@@ -41,38 +46,38 @@ import static utils.Utils.*;
 public class AppTests {
 
     static AndroidDriver driver;
+    static PageBase pageBase;
     static LandingPage landingPage;
     static LoginPage loginPage;
     static DashboardPage dashboardPage;
     static ComunityPage comunityPage;
+    static WhatWeOfferPage whatWeOfferPage;
+    static StudentExperiencePage studentExperiencePage;
     static User user;
     static Logger logger = MyLogger.getLogger();
 
-
     @Before
     public void setUp() {
-        URL url;
 
-        String appiumServerURL = "http://192.168.1.21:4723/";
+        URL url;
         try {
-            url = new URI(appiumServerURL).toURL();
+            url = new URI(Constants.APPIUM_SERVER_URL).toURL();
         } catch (MalformedURLException | URISyntaxException e) {
             throw new RuntimeException(e);
         }
 
-        UiAutomator2Options options = new UiAutomator2Options()
-                .setUdid("R5CW40AWA1F")
-                .setAppPackage("com.k12.onboarding")
-                .setAppActivity("com.k12.onboarding.MainActivity");
         driver = new AndroidDriver(
-                url, options
+                url, getOptions()
         );
+
+        logger.info(driver.toString());
 
         driver.startRecordingScreen(
                 new AndroidStartScreenRecordingOptions()
                         .withVideoSize("1280x720")
-                        .withTimeLimit(Duration.ofSeconds(200)));
-        landingPage = new LandingPage(driver);
+                        .withTimeLimit(Duration.ofSeconds(1800)));
+
+        pageBase = new PageBase(driver);
     }
 
     @After
@@ -93,6 +98,8 @@ public class AppTests {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+
         /*
         try {
 
@@ -103,30 +110,27 @@ public class AppTests {
 
          */
 
+        forceWait(5000);
         driver.quit();
 
     }
 
     public static void landingPageisOpen() {
-
+        landingPage = new LandingPage(driver);
+        switchContext(driver);
+        assertTrue(landingPage.isOpen());
         assertTrue(landingPage.isVideoDisplayed());
-        /*
-        try {
-            DriveFileManager.conectionDriveTest();
-        } catch (IOException | GeneralSecurityException e) {
-            throw new RuntimeException(e);
-        }
-
-         */
-
+        assertEquals(
+                landingPage.getVideoElement().getAttribute("src"),
+                Constants.VIDEO_SOURCE);
+        assertTrue(isClickable(driver, landingPage.getVideoElement()));
+        assertEquals(
+                landingPage.getMainText().getText(),
+                Constants.TEXT_IN_FIRST_LANDINGPAGE);
     }
 
-    public static LoginPage clickLoginInLandingPage() {
+    public static void clickLoginInLandingPage() {
         landingPage.clickOnLoginButton();
-        assertTrue(landingPage.isOpen());
-        return new LoginPage(driver);
-
-
     }
 
     public static DashboardPage clickLoginInLoginPage() {
@@ -144,30 +148,77 @@ public class AppTests {
     public static void clickOnHiveBriteButton(){
         comunityPage = clickOnComunityButton();
         comunityPage.clickOnHiveBriteButton();
-        forceWait(7000);
+        forceWait(2000);
     }
 
-    //new UiSelector().text("< Back")
+    public static void carrouselTest() {
 
+        switchContextWebView(driver);
+        whatWeOfferPage = new WhatWeOfferPage(driver);
+        studentExperiencePage = new StudentExperiencePage(driver);
+        assertEquals(
+                whatWeOfferPage.getWhatWeOfferTxt().getText(),
+                Constants.WHAT_WE_OFFER);
+
+        assertEquals(
+                whatWeOfferPage.footerDot(driver,"2").getAttribute("class"),
+                Constants.STEP_ACTIVE_CLASS);
+
+        assertEquals(
+                whatWeOfferPage.getMainText().getText(),
+                Constants.TEXT_IN_SECOND_LANDINGPAGE);
+
+        clickRightArrow();
+
+        assertTrue(studentExperiencePage.isOpen(driver));
+
+        /*
+        assertEquals(
+                studentExperiencePage.getStudentExperienceTxt().getText(),
+                Constants.STUDENT_EXPERIENCE);
+
+        assertEquals(
+                studentExperiencePage.footerDot(driver,"3").getAttribute("class"),
+                Constants.STEP_ACTIVE_CLASS);
+
+        assertEquals(
+                studentExperiencePage.getMainText().getText(),
+                Constants.TEXT_IN_THIRD_LANDINGPAGE);
+
+         */
+
+        clickRightArrow();
+
+
+    }
+
+    public static void clickRightArrow(){
+        if (!Objects.requireNonNull(driver.getContext()).startsWith("WEBVIEW_")) {
+            switchContextWebView(driver);
+        }
+        pageBase.getRightArrowButton().click();
+
+    }
 
     public static void login() {
 
-        loginPage = clickLoginInLandingPage();
+        loginPage = new LoginPage(driver);
         assertTrue(loginPage.isOpen());
-        loginPage.clickAccountTypeSelector();
+        loginPage.clickLCSelector();
+        if (!Objects.requireNonNull(driver.getContext()).equals("NATIVE_APP")) {
+            switchContextNativeApp(driver);
+        }
         loginPage.setUsername(user.getUserData().getUser());
         loginPage.setPassword(user.getUserData().getPassword());
-        dashboardPage = clickLoginInLoginPage();
-        waitFor(driver).until(ExpectedConditions.visibilityOf(dashboardPage.getDismissButton()));
-        logger.info("dismiss button in displayed = {}", dashboardPage.getDismissButton().isDisplayed());
-        dashboardPage.dismissSecurityQuestions();
-
-        forceWait(3000);
 
     }
 
     public static void dashboardPageIsOpen() {
+        dashboardPage = new DashboardPage(driver);
+        waitFor(driver).until(ExpectedConditions.visibilityOf(dashboardPage.getDismissButton()));
+        dashboardPage.dismissSecurityQuestions();
         assertTrue(dashboardPage.isOpen(driver, user.getUserData().getName()));
+
     }
 
     public static void goToDashBoardPage() {

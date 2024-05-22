@@ -1,9 +1,7 @@
 package AppCucumber;
 
 import io.cucumber.java.en.*;
-
 import static AppCucumber.tests.AppTests.*;
-import static utils.Utils.getUser;
 
 public class StepDefinitions {
 
@@ -14,19 +12,15 @@ public class StepDefinitions {
     }
 
 
-
-    @Given("user is on the landing page")
-    public void userIsOnTheLandingPage() {
+    @Given("user is in landing page")
+    public void userIsInLandingPage() {
         landingPageisOpen();
-
     }
 
 
     @When("user enters valid credentials")
     public void theUserEntersValidCredentialsForUser() {
-
         login();
-
     }
 
 
@@ -53,5 +47,31 @@ public class StepDefinitions {
     @And("user clicks on hivebrite button")
     public void userClicksOnHivebriteButton() {
         clickOnHiveBriteButton();
+    }
+
+
+    @And("the carrousel is working")
+    public void theCarrouselIsWorking() {
+        carrouselTest();
+    }
+
+    @When("click on right arrow")
+    public void clickOnRightArrow() {
+        clickRightArrow();
+    }
+
+    @When("user click on login button")
+    public void userClickOnLoginButton() {
+        clickLoginInLandingPage();
+    }
+
+    @And("user clicks on login session button")
+    public void userClicksOnLoginSessionButton() {
+        clickLoginInLoginPage();
+    }
+
+    @Then("user accesses to dashboard page")
+    public void userAccessesToDashboardPage() {
+        dashboardPageIsOpen();
     }
 }

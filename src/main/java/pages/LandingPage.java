@@ -1,25 +1,34 @@
 package pages;
 
-import io.appium.java_client.pagefactory.AndroidFindBy;
+import io.appium.java_client.AppiumBy;
 import io.appium.java_client.pagefactory.AppiumFieldDecorator;
+import lombok.Getter;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import pages.Base.PageBase;
+import utils.Constants;
 
 import java.time.Duration;
 
-public class LandingPage {
+@Getter
+public class LandingPage extends PageBase {
 
-    @AndroidFindBy(uiAutomator = "new UiSelector().text(\"Play Video\")")
+
+    @FindBy(xpath = "//page-who-we-are/div[1]/iframe")
     private WebElement videoElement;
 
-    @AndroidFindBy(uiAutomator = "new UiSelector().text(\"INICIAR SESIÓN\")")
-    private WebElement loginButton;
 
-    @AndroidFindBy(uiAutomator = "new UiSelector().text(\"¿QUIÉNES SOMOS?\")")
+    @FindBy(xpath = "//page-who-we-are/div[2]")
     private WebElement whoWeAreLabel;
 
+    @FindBy(xpath = "//page-who-we-are/div[4]")
+    private WebElement mainText;
+
     public LandingPage(WebDriver driver) {
+        super(driver);
         PageFactory.initElements(new AppiumFieldDecorator(driver, Duration.ofSeconds(5)), this);
     }
 
@@ -32,6 +41,17 @@ public class LandingPage {
     }
 
     public void clickOnLoginButton(){
-        loginButton.click();
+        super.loginButton.click();
     }
+
+    public WebElement getMainText(WebDriver driver, String txt){
+        txt = txt.substring(0,10);
+        String locator =  String.format("//android.widget.TextView[contains(@text, '%s')]", txt);
+        return driver.findElement(AppiumBy.xpath(locator));
+
+    }
+
+
+
+
 }

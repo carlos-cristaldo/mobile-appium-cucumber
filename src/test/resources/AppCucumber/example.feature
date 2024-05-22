@@ -2,12 +2,22 @@ Feature: K12 App
 
   Scenario Outline: Successful Login
     Given "<user>" is selected
-    And user is on the landing page
-    When user enters valid credentials
-    Then user is in Dashboard Page
+    And user is in landing page
+    When user click on login button
+    And user enters valid credentials
+    And user clicks on login session button
+    Then user accesses to dashboard page
+
     Examples:
       | user  |
       | user1 |
+
+
+  Scenario: Verify Marketing intro
+    Given user is in landing page
+    When click on right arrow
+    Then the carrousel is working
+
 
   Scenario Outline: Crash when tap on back
     Given "<user>" is selected
@@ -17,3 +27,4 @@ Feature: K12 App
     Examples:
       | user  |
       | user1 |
+

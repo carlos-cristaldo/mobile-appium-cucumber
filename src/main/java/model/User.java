@@ -1,5 +1,10 @@
 package model;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 public class User {
 
     private String username;
@@ -11,22 +16,6 @@ public class User {
 
     public User(String username, UserData userData) {
         this.username = username;
-        this.userData = userData;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public UserData getUserData() {
-        return userData;
-    }
-
-    public void setUserData(UserData userData) {
         this.userData = userData;
     }
 

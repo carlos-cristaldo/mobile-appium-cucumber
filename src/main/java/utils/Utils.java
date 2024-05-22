@@ -7,16 +7,13 @@ import com.google.gson.stream.JsonReader;
 import model.User;
 
 import model.UserData;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.ui.FluentWait;
-import org.openqa.selenium.support.ui.Wait;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.lang.reflect.Type;
-import java.time.Duration;
 import java.util.Map;
+
+import static utils.GetProperty.getProperties;
 
 public class Utils {
 
@@ -29,8 +26,7 @@ public class Utils {
     }
 
     public static User getUser(String keyUser) {
-        Map<String, Map<String, String>> output ;
-
+        Map<String, UserData> output ;
         JsonReader getLocalJsonFile;
         try {
             getLocalJsonFile = new JsonReader(new FileReader(Constants.JSON_PATH));
@@ -38,25 +34,13 @@ public class Utils {
             throw new RuntimeException(e);
         }
 
-        Type mapTokenType = new TypeToken<Map<String, Map>>() {
+        Type mapTokenType = new TypeToken<Map<String, UserData>>() {
         }.getType();
 
         output= new Gson().fromJson(getLocalJsonFile, mapTokenType);
 
-        return new User(output.keySet().stream().findFirst().orElse(null),
-                new UserData(
-                             output.get(keyUser).get("user"),
-                             output.get(keyUser).get("password"),
-                             output.get(keyUser).get("name")
-                                ));
-
-    }
-
-    public static Wait waitFor(WebDriver driver){
-        return new FluentWait<>(driver)
-                .withTimeout(Duration.ofSeconds(60))
-                .pollingEvery(Duration.ofSeconds(3))
-                .ignoring(NoSuchElementException.class);
+        return new User(keyUser,
+              output.get(keyUser));
     }
 
 
