@@ -1,59 +1,68 @@
 package pages;
 
+import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.pagefactory.AndroidFindBy;
-import io.appium.java_client.pagefactory.AppiumFieldDecorator;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
-import utils.Constants;
+import pages.Base.ParentPortalBasePage;
 
-import java.time.Duration;
+import static extended.selenium.MobileActions.clickElement;
+import static extended.selenium.MobileActions.waitForPresenceFunction;
 
-public class LoginPage {
+public class LoginPage extends ParentPortalBasePage {
 
-    @FindBy(xpath = "//h1")
-    private WebElement selectAccountType;
+  @AndroidFindBy(uiAutomator = "new UiSelector().className(\"android.widget.TextView\").instance(4)")
+  private WebElement lCSelector;
 
+  @AndroidFindBy(uiAutomator = "new UiSelector().text(\"Elija el Tipo de Cuenta\")")
+  private WebElement chooseAccontType;
 
-    @AndroidFindBy(uiAutomator = "new UiSelector().text(\"Iniciar sesión\")")
-    private WebElement loginButton;
+  @AndroidFindBy(uiAutomator = "new UiSelector().text(\"Soy el Mentor de mis estudiantes.\")")
+  private WebElement lCLbl;
 
-    @FindBy(id = "loginLCSelector")
-    private WebElement lcSelector;
+  @AndroidFindBy(uiAutomator = "new UiSelector().className(\"android.widget.EditText\").instance(0)")
+  private WebElement inputUsername;
 
-    @AndroidFindBy(uiAutomator = "new UiSelector().className(\"android.widget.EditText\").instance(0)")
-    private WebElement loginEmailLC;
+  @AndroidFindBy(uiAutomator = "new UiSelector().className(\"android.widget.EditText\").instance(1)")
+  private WebElement inputPassword;
 
-    @AndroidFindBy(uiAutomator = "new UiSelector().className(\"android.widget.EditText\").instance(1)")
-    private WebElement loginPasswordLC;
+  @AndroidFindBy(uiAutomator = "new UiSelector().text(\"Iniciar sesión\")")
+  private WebElement loginButton;
+
+  @AndroidFindBy(uiAutomator = "new UiSelector().text(\"¿Aún no tienes una cuenta?\")")
+  private WebElement signUpButton;
 
     public LoginPage(WebDriver driver) {
-        PageFactory.initElements(new AppiumFieldDecorator(driver, Duration.ofSeconds(5)), this);
-    }
-
-    public Boolean isOpen(){
-        return selectAccountType.getText().equals(Constants.SELECT_ACCOUNT_TYPE);
-    }
-
-    public void setUsername(String user){
-        loginEmailLC.sendKeys(user);
-    }
-
-    public void setPassword(String pass){
-        loginPasswordLC.sendKeys(pass);
-    }
-
-    public void clickOnLoginButton(){
-        loginButton.click();
-    }
-
-    public void clickLCSelector(){
-        lcSelector.click();
+        super(driver);
     }
 
 
+    public void clickOnLCSelector(AndroidDriver driver){
+        clickElement(driver, lCSelector);
+    }
 
+    public Boolean isOpen(AndroidDriver driver){
+        waitForPresenceFunction(driver, chooseAccontType);
+        return chooseAccontType.isDisplayed();
+    }
 
+    public Boolean lCIsSelected(AndroidDriver driver){
+        waitForPresenceFunction(driver, lCLbl);
+        return lCLbl.isDisplayed();
+    }
 
+    public void setInputUsername(String user){
+        inputUsername.sendKeys(user);
+    }
+    public void setInputPassword(String pass){
+        inputPassword.sendKeys(pass);
+    }
+
+    public void clickOnLoginButton(AndroidDriver driver){
+        clickElement(driver, loginButton);
+    }
+
+    public void clickOnSignUpButton(AndroidDriver driver){
+        clickElement(driver, signUpButton);
+    }
 }

@@ -8,10 +8,13 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.testng.annotations.BeforeClass;
 import pages.Base.PageBase;
 import utils.Constants;
 
 import java.time.Duration;
+
+import static extended.selenium.MobileActions.isClickable;
 
 @Getter
 public class LandingPage extends PageBase {
@@ -27,30 +30,11 @@ public class LandingPage extends PageBase {
     @FindBy(xpath = "//page-who-we-are/div[4]")
     private WebElement mainText;
 
+
     public LandingPage(WebDriver driver) {
         super(driver);
         PageFactory.initElements(new AppiumFieldDecorator(driver, Duration.ofSeconds(5)), this);
     }
-
-    public Boolean isVideoDisplayed(){
-        return videoElement.isDisplayed();
-    }
-
-    public Boolean isOpen(){
-        return whoWeAreLabel.isDisplayed();
-    }
-
-    public void clickOnLoginButton(){
-        super.loginButton.click();
-    }
-
-    public WebElement getMainText(WebDriver driver, String txt){
-        txt = txt.substring(0,10);
-        String locator =  String.format("//android.widget.TextView[contains(@text, '%s')]", txt);
-        return driver.findElement(AppiumBy.xpath(locator));
-
-    }
-
 
 
 

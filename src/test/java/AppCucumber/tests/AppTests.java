@@ -2,24 +2,20 @@ package AppCucumber.tests;
 
 import cucumber.api.CucumberOptions;
 import io.appium.java_client.android.AndroidStartScreenRecordingOptions;
+import io.appium.java_client.android.options.UiAutomator2Options;
 import model.User;
 import org.apache.commons.io.FileUtils;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.slf4j.Logger;
+import pages.*;
 import pages.Base.PageBase;
-import pages.ComunityPage;
-import pages.DashboardPage;
-import pages.LandingPage;
 import io.appium.java_client.android.AndroidDriver;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import org.junit.runner.RunWith;
 import org.junit.runner.Runner;
 
-import pages.LoginPage;
-import pages.carrousel.StudentExperiencePage;
-import pages.carrousel.WhatWeOfferPage;
-import utils.Constants;
+import pages.carrousel.*;
+import pages.lgcreateaccount.ChooseRolePage;
 import utils.MyLogger;
 
 import java.io.File;
@@ -37,8 +33,8 @@ import java.util.Objects;
 
 
 import static extended.selenium.MobileActions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+import static utils.GetProperty.getProperties;
 import static utils.Utils.*;
 
 @RunWith(Runner.class)
@@ -53,22 +49,37 @@ public class AppTests {
     static ComunityPage comunityPage;
     static WhatWeOfferPage whatWeOfferPage;
     static StudentExperiencePage studentExperiencePage;
+    static FindSchoolPage findSchoolPage;
+    static HowToStartPage howToStartPage;
+    static InformationPage informationPage;
+    static ParentPortalPage parentPortalPage;
+    static WhoWeArePage whoWeArePage;
+    static ChooseRolePage chooseRolePage;
     static User user;
     static Logger logger = MyLogger.getLogger();
 
     @Before
-    public void setUp() {
+    public static void setUp() {
 
+        UiAutomator2Options options;
         URL url;
         try {
-            url = new URI(Constants.APPIUM_SERVER_URL).toURL();
+            url = new URI(getProperties("local.properties", "appium_server_url")).toURL();
         } catch (MalformedURLException | URISyntaxException e) {
             throw new RuntimeException(e);
         }
 
+        if (getProperties("local.properties", "ENV").equals("QA")) {
+
+            options = getOptionsQA();
+        } else {
+            options = getOptionsPROD();
+        }
+
         driver = new AndroidDriver(
-                url, getOptions()
+                url, options
         );
+
 
         logger.info(driver.toString());
 
@@ -78,10 +89,23 @@ public class AppTests {
                         .withTimeLimit(Duration.ofSeconds(1800)));
 
         pageBase = new PageBase(driver);
+        /*
+        landingPage = new LandingPage(driver);
+        loginPage = new LoginPage(driver);
+        dashboardPage = new DashboardPage(driver);
+        comunityPage = new ComunityPage(driver);
+        whatWeOfferPage = new WhatWeOfferPage(driver);
+        studentExperiencePage = new StudentExperiencePage(driver);
+        findSchoolPage = new FindSchoolPage(driver);
+        howToStartPage = new HowToStartPage(driver);
+        informationPage = new InformationPage(driver);
+        reRegPage = new ReRegPage(driver);
+
+         */
     }
 
     @After
-    public void tearDown() {
+    public static void tearDown() {
 
         Timestamp stamp = Timestamp.valueOf(LocalDateTime.now());
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
@@ -89,7 +113,7 @@ public class AppTests {
                 .replace(":", "-")
                 .replace(".", "-");
         String path = String.format("evidence/video/%s.mp4", timestamp);
-
+        forceWait(3000);
         String video = driver.stopRecordingScreen();
         byte[] decode = Base64.getDecoder().decode(video);
 
@@ -98,7 +122,6 @@ public class AppTests {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
 
         /*
         try {
@@ -110,125 +133,128 @@ public class AppTests {
 
          */
 
-        forceWait(5000);
         driver.quit();
 
     }
 
-    public static void landingPageisOpen() {
-        landingPage = new LandingPage(driver);
-        switchContext(driver);
-        assertTrue(landingPage.isOpen());
-        assertTrue(landingPage.isVideoDisplayed());
-        assertEquals(
-                landingPage.getVideoElement().getAttribute("src"),
-                Constants.VIDEO_SOURCE);
-        assertTrue(isClickable(driver, landingPage.getVideoElement()));
-        assertEquals(
-                landingPage.getMainText().getText(),
-                Constants.TEXT_IN_FIRST_LANDINGPAGE);
-    }
+    //-----------------   WHO WE ARE PAGE  -----------------
 
-    public static void clickLoginInLandingPage() {
-        landingPage.clickOnLoginButton();
-    }
-
-    public static DashboardPage clickLoginInLoginPage() {
-        loginPage.clickOnLoginButton();
-        return new DashboardPage(driver);
-
-    }
-
-    public static ComunityPage clickOnComunityButton() {
-        dashboardPage.clickOnComunityButton();
-        forceWait(5000);
-        return new ComunityPage(driver);
-    }
-
-    public static void clickOnHiveBriteButton(){
-        comunityPage = clickOnComunityButton();
-        comunityPage.clickOnHiveBriteButton();
-        forceWait(2000);
-    }
-
-    public static void carrouselTest() {
-
-        switchContextWebView(driver);
-        whatWeOfferPage = new WhatWeOfferPage(driver);
-        studentExperiencePage = new StudentExperiencePage(driver);
-        assertEquals(
-                whatWeOfferPage.getWhatWeOfferTxt().getText(),
-                Constants.WHAT_WE_OFFER);
-
-        assertEquals(
-                whatWeOfferPage.footerDot(driver,"2").getAttribute("class"),
-                Constants.STEP_ACTIVE_CLASS);
-
-        assertEquals(
-                whatWeOfferPage.getMainText().getText(),
-                Constants.TEXT_IN_SECOND_LANDINGPAGE);
-
-        clickRightArrow();
-
-        assertTrue(studentExperiencePage.isOpen(driver));
-
-        /*
-        assertEquals(
-                studentExperiencePage.getStudentExperienceTxt().getText(),
-                Constants.STUDENT_EXPERIENCE);
-
-        assertEquals(
-                studentExperiencePage.footerDot(driver,"3").getAttribute("class"),
-                Constants.STEP_ACTIVE_CLASS);
-
-        assertEquals(
-                studentExperiencePage.getMainText().getText(),
-                Constants.TEXT_IN_THIRD_LANDINGPAGE);
-
-         */
-
-        clickRightArrow();
-
-
-    }
-
-    public static void clickRightArrow(){
-        if (!Objects.requireNonNull(driver.getContext()).startsWith("WEBVIEW_")) {
-            switchContextWebView(driver);
+    public static void whoWeArePageIsOpen(){
+        if (Objects.isNull(whoWeArePage)){
+            whoWeArePage = new WhoWeArePage(driver);
         }
-        pageBase.getRightArrowButton().click();
-
+        assertTrue(whoWeArePage.isOpen(driver));
     }
 
-    public static void login() {
-
-        loginPage = new LoginPage(driver);
-        assertTrue(loginPage.isOpen());
-        loginPage.clickLCSelector();
-        if (!Objects.requireNonNull(driver.getContext()).equals("NATIVE_APP")) {
-            switchContextNativeApp(driver);
+    public static void whoWeArePageVideoIsPresent(){
+        if (Objects.isNull(whoWeArePage)){
+            whoWeArePage = new WhoWeArePage(driver);
         }
-        loginPage.setUsername(user.getUserData().getUser());
-        loginPage.setPassword(user.getUserData().getPassword());
-
+        assertTrue(whoWeArePage.videoElementIsPresent(driver));
     }
 
-    public static void dashboardPageIsOpen() {
-        dashboardPage = new DashboardPage(driver);
-        waitFor(driver).until(ExpectedConditions.visibilityOf(dashboardPage.getDismissButton()));
-        dashboardPage.dismissSecurityQuestions();
-        assertTrue(dashboardPage.isOpen(driver, user.getUserData().getName()));
-
+    public static void whoWeArePageVideoCanBePlayed(){
+        if (Objects.isNull(whoWeArePage)){
+            whoWeArePage = new WhoWeArePage(driver);
+        }
+        assertTrue(whoWeArePage.videoCanBePlayed(driver));
     }
 
-    public static void goToDashBoardPage() {
-        login();
+    public static void whoWeArePageClickRightArrow(){
+        if (Objects.isNull(whoWeArePage)){
+            whoWeArePage = new WhoWeArePage(driver);
+        }
+        whoWeArePage.clicRightArrow(driver);
+    }
+
+    public static void whatWeOfferPageIsOpen(){
+        if (Objects.isNull(whatWeOfferPage)){
+            whatWeOfferPage = new WhatWeOfferPage(driver);
+        }
+        System.out.println(whatWeOfferPage.getPageData(driver));
+    }
+
+    public static void clickStartSession(){
+        if (Objects.isNull(whoWeArePage)){
+            whoWeArePage = new WhoWeArePage(driver);
+        }
+        whoWeArePage.clickOnStartSession(driver);
+    }
+
+    public static void loginPageIsOpen(){
+        if (Objects.isNull(loginPage)){
+            loginPage = new LoginPage(driver);
+        }
+        assertTrue(loginPage.isOpen(driver));
+    }
+
+    public static void clickLCSelector(){
+        if (Objects.isNull(loginPage)){
+            loginPage = new LoginPage(driver);
+        }
+        loginPage.clickOnLCSelector(driver);
+        assertTrue(loginPage.lCIsSelected(driver));
+    }
+
+    public static void setUser(){
+        if (Objects.isNull(loginPage)){
+            loginPage = new LoginPage(driver);
+        }
+        loginPage.setInputUsername(user.getUserData().getUser());
+    }
+
+    public static void setPass(){
+        if (Objects.isNull(loginPage)){
+            loginPage = new LoginPage(driver);
+        }
+        loginPage.setInputPassword(user.getUserData().getPassword());
+    }
+
+    public static void clickLoginButton(){
+        if (Objects.isNull(loginPage)){
+            loginPage = new LoginPage(driver);
+        }
+        loginPage.clickOnLoginButton(driver);
     }
 
 
-    public static void setUser(String data) {
+    public static void dismissSecurity(){
+        if (Objects.isNull(dashboardPage)){
+            dashboardPage = new DashboardPage(driver);
+        }
+        dashboardPage.dismissOnSecurity(driver);
+    }
+
+    public static void dashboardIsOpen(){
+        if (Objects.isNull(dashboardPage)){
+            dashboardPage = new DashboardPage(driver);
+        }
+        assertTrue(dashboardPage.isOpen(driver,user.getUserData().getName()));
+    }
+
+
+    public static void selectUser(String data){
         user = getUser(data);
     }
+
+    public static void clickSignUpButton(){
+        if (Objects.isNull(loginPage)){
+            loginPage = new LoginPage(driver);
+        }
+        if (Objects.isNull(chooseRolePage)){
+            chooseRolePage = new ChooseRolePage(driver);
+        }
+        loginPage.clickOnSignUpButton(driver);
+        assertTrue(chooseRolePage.isOpen(driver));
+    }
+
+    public static void clickLGAccountSelector(){
+        if (Objects.isNull(chooseRolePage)){
+            chooseRolePage = new ChooseRolePage(driver);
+        }
+        chooseRolePage.clickOnLGAccountSelector(driver);
+    }
+
 
 
 }

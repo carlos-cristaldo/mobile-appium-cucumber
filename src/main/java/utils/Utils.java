@@ -7,13 +7,13 @@ import com.google.gson.stream.JsonReader;
 import model.User;
 
 import model.UserData;
+import org.apache.commons.lang3.RandomStringUtils;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-import static utils.GetProperty.getProperties;
 
 public class Utils {
 
@@ -28,6 +28,8 @@ public class Utils {
     public static User getUser(String keyUser) {
         Map<String, UserData> output ;
         JsonReader getLocalJsonFile;
+
+        User user = new User();
         try {
             getLocalJsonFile = new JsonReader(new FileReader(Constants.JSON_PATH));
         } catch (FileNotFoundException e) {
@@ -39,10 +41,30 @@ public class Utils {
 
         output= new Gson().fromJson(getLocalJsonFile, mapTokenType);
 
-        return new User(keyUser,
-              output.get(keyUser));
+        return  new User(keyUser,
+                output.get(keyUser));
+
     }
 
+    public static String generateRandomAlphaString(int length){
+        return
+                RandomStringUtils.randomAlphabetic(length);
+    }
+
+    public static String generateRandomNumericString(int length){
+        return
+                RandomStringUtils.random(length, false, true);
+    }
+
+    public static String generateRandomEmail(int length){
+        String tail = "@testingmail.com";
+        return
+                generateRandomAlphaString(12).concat(tail);
+    }
+
+    public static Integer generateRandomInteger(int min, int max){
+        return  (int)(Math.random() * (max - min + 1)) + min;
+    }
 
 }
 

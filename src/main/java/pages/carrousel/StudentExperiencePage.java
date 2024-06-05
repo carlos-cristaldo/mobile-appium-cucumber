@@ -4,13 +4,11 @@ import lombok.Getter;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import pages.LandingPage;
+import pages.Base.PageBase;
 import utils.Constants;
 
-import static org.testng.AssertJUnit.assertEquals;
-
 @Getter
-public class StudentExperiencePage extends LandingPage {
+public class StudentExperiencePage extends PageBase {
 
     @FindBy(xpath = "//div[@id=\"sample-lessons\"]/div[2]")
     private WebElement studentExperienceTxt;
@@ -22,17 +20,6 @@ public class StudentExperiencePage extends LandingPage {
         super(driver);
     }
 
-    public Boolean isOpen(WebDriver driver){
-        return
-                getStudentExperienceTxt().getText().equals
-                        (Constants.STUDENT_EXPERIENCE)
-                &&
-                footerDot(driver,"3").getAttribute("class").equals
-                        (Constants.STEP_ACTIVE_CLASS)
-                &&
-                getMainText().getText().equals
-                        (Constants.TEXT_IN_THIRD_LANDINGPAGE);
-    }
 
 
 

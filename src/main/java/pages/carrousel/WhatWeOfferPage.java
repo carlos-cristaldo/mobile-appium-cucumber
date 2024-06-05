@@ -1,27 +1,30 @@
 package pages.carrousel;
 
+import io.appium.java_client.pagefactory.AndroidFindBy;
 import lombok.Getter;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import pages.LandingPage;
+import pages.Base.PageBase;
+
+import static extended.selenium.MobileActions.waitForPresenceFunction;
+import static utils.Utils.forceWait;
 
 @Getter
-public class WhatWeOfferPage extends LandingPage {
+public class WhatWeOfferPage extends PageBase {
 
-    @FindBy(xpath = "//div[@id=\"what-we-offer\"]/div[2]")
-    private WebElement whatWeOfferTxt;
-
-    @FindBy(xpath = "//div[@id=\"what-we-offer\"]/div[4]")
-    private WebElement mainText;
+    @AndroidFindBy(uiAutomator = "new UiSelector().className(\"android.widget.TextView\").instance(4)")
+    private WebElement unknowElement;
 
     public WhatWeOfferPage(WebDriver driver) {
         super(driver);
     }
 
-
-
-
+    public String getPageData(WebDriver driver){
+        waitForPresenceFunction(driver, unknowElement);
+        forceWait(2000);
+        System.out.println(STR."Unknow element text = \{unknowElement.getText()}");
+        return unknowElement.getAttribute("bounds");
+    }
 
 
 
