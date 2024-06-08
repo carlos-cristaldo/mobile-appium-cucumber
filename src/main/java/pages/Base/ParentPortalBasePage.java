@@ -19,9 +19,7 @@ public class ParentPortalBasePage extends PageBase{
         super(driver);
     }
 
-    public void clickBackButton(WebDriver driver){
-        switchContextNativeApp((AndroidDriver) driver);
-         waitForPresenceFunction(driver, goBackButton);
-         goBackButton.click();
+    public void clickBackButton(AndroidDriver driver){
+        clickElement(driver, goBackButton);
     }
 }

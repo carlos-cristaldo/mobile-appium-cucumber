@@ -16,6 +16,8 @@ import org.junit.runner.Runner;
 
 import pages.carrousel.*;
 import pages.lgcreateaccount.ChooseRolePage;
+import pages.lgcreateaccount.CreateLGAccountPage;
+import pages.lgcreateaccount.GettingStartedLGPage;
 import utils.MyLogger;
 
 import java.io.File;
@@ -55,6 +57,8 @@ public class AppTests {
     static ParentPortalPage parentPortalPage;
     static WhoWeArePage whoWeArePage;
     static ChooseRolePage chooseRolePage;
+    static GettingStartedLGPage gettingStartedLGPage;
+    static CreateLGAccountPage createLGAccountPage;
     static User user;
     static Logger logger = MyLogger.getLogger();
 
@@ -79,6 +83,8 @@ public class AppTests {
         driver = new AndroidDriver(
                 url, options
         );
+
+        driver.setSetting("enforceXPath1",true);
 
 
         logger.info(driver.toString());
@@ -133,7 +139,10 @@ public class AppTests {
 
          */
 
+        //driver.close();
+        driver.terminateApp("com.k12.onboarding");
         driver.quit();
+
 
     }
 
@@ -232,6 +241,18 @@ public class AppTests {
         assertTrue(dashboardPage.isOpen(driver,user.getUserData().getName()));
     }
 
+    public static void logout(){
+        if (Objects.isNull(dashboardPage)){
+            dashboardPage = new DashboardPage(driver);
+        }
+        if (Objects.isNull(loginPage)){
+            loginPage = new LoginPage(driver);
+        }
+        dashboardPage.clickOnMenuButton();
+        dashboardPage.clickOnCloseSesionButton();
+        assertTrue(loginPage.isOpen(driver));
+    }
+
 
     public static void selectUser(String data){
         user = getUser(data);
@@ -252,7 +273,32 @@ public class AppTests {
         if (Objects.isNull(chooseRolePage)){
             chooseRolePage = new ChooseRolePage(driver);
         }
+        if (Objects.isNull(gettingStartedLGPage)){
+            gettingStartedLGPage = new GettingStartedLGPage(driver);
+        }
+
         chooseRolePage.clickOnLGAccountSelector(driver);
+        assertTrue(gettingStartedLGPage.isOpen(driver));
+    }
+
+    public static void clickCreateLGAccountButton(){
+        if (Objects.isNull(gettingStartedLGPage)){
+            gettingStartedLGPage = new GettingStartedLGPage(driver);
+        }
+        if (Objects.isNull(createLGAccountPage)){
+            createLGAccountPage = new CreateLGAccountPage(driver);
+        }
+        gettingStartedLGPage.clickOnCreateAccountButton(driver);
+        assertTrue(createLGAccountPage.isOpen(driver));
+    }
+
+    public static void completeLGCreateAccountForm(){
+
+            createLGAccountPage = new CreateLGAccountPage(driver);
+
+        createLGAccountPage.inputNamesAndEmail(driver, generateRandomAlphaString(10));
+        //createLGAccountPage.inputPassword(driver);
+        //createLGAccountPage.inputLastName(driver, generateRandomAlphaString(10));
     }
 
 

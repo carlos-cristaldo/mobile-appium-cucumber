@@ -17,24 +17,28 @@ Feature: K12 App
     Given "<user>" is selected
     When  login as an LC
     Then user is redirected to dashboard page
+    And user is logged out of the app
 
     Examples:
       | user  |
-      | user1 |
+      | lcprod |
 
   Scenario Outline: Successful Login as LG
     Given "<user>" is selected
     When login as an LG
     Then user is redirected to dashboard page
+    And user is logged out of the app
 
     Examples:
       | user  |
-      | user4 |
+      | lgprod |
 
   Scenario: LG create account
     When navigate to login page
     And click sign up link
     And select LG Role
+    And and click on create account button
+    And completes the registration process
 
 
 

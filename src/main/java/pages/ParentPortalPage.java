@@ -1,24 +1,29 @@
 package pages;
 
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.pagefactory.AndroidFindBy;
 import lombok.Getter;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import pages.Base.ParentPortalBasePage;
 
+import static extended.selenium.MobileActions.waitForPresenceFunction;
+
 
 @Getter
 public class ParentPortalPage extends ParentPortalBasePage {
 
-    @FindBy(className = "student-card__header__title")
-    private WebElement k12HomeIcon;
+    @AndroidFindBy(uiAutomator = "new UiSelector().text(\"K12 Logo\")")
+    private WebElement k12HomeLogo;
 
     public ParentPortalPage(WebDriver driver) {
         super(driver);
     }
 
-    public Boolean isOpen(){
-        return k12HomeIcon.isDisplayed();
+    public Boolean isOpen(AndroidDriver driver){
+        waitForPresenceFunction(driver, k12HomeLogo);
+        return k12HomeLogo.isDisplayed();
     }
 
 }

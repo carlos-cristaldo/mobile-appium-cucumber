@@ -176,4 +176,19 @@ public class StepDefinitions {
     public void selectLGRole() {
         clickLGAccountSelector();
     }
+
+    @And("and click on create account button")
+    public void completeTheSignUpProcess() {
+        clickCreateLGAccountButton();
+    }
+
+    @And("completes the registration process")
+    public void completesTheRegistrationProcess() {
+        completeLGCreateAccountForm();
+    }
+
+    @And("user is logged out of the app")
+    public void userIsLoggedOutOfTheApp() {
+        logout();
+    }
 }

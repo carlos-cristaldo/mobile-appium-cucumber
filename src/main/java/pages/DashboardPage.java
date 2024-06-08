@@ -1,16 +1,12 @@
 package pages;
 
-import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.pagefactory.AndroidFindBy;
 import io.appium.java_client.pagefactory.AppiumFieldDecorator;
 import lombok.Getter;
 import org.openqa.selenium.*;
-import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.FluentWait;
-import org.openqa.selenium.support.ui.Wait;
 import org.slf4j.Logger;
 import pages.Base.DashboardPageBase;
 import utils.Constants;
@@ -19,7 +15,6 @@ import utils.MyLogger;
 import java.time.Duration;
 
 import static extended.selenium.MobileActions.*;
-import static utils.Utils.forceWait;
 
 @Getter
 public class DashboardPage extends DashboardPageBase {
