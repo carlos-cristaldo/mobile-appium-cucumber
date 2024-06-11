@@ -37,7 +37,7 @@ public class PageBase {
     }
 
     public void clickOnStartSession(AndroidDriver driver){
-        clickElement(driver, startSessionElement);
+        clickElement(startSessionElement);
     }
 
 }

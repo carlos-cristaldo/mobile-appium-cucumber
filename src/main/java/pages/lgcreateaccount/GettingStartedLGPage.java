@@ -7,7 +7,7 @@ import org.openqa.selenium.WebElement;
 import pages.Base.ParentPortalBasePage;
 
 import static extended.selenium.MobileActions.clickElement;
-import static extended.selenium.MobileActions.waitForPresenceFunction;
+import static extended.selenium.MobileActions.waitForPresenceOfElement;
 
 public class GettingStartedLGPage extends ParentPortalBasePage {
 
@@ -25,13 +25,13 @@ public class GettingStartedLGPage extends ParentPortalBasePage {
     }
 
     public Boolean isOpen(AndroidDriver driver){
-        waitForPresenceFunction(driver, greatKeepGoingLbl);
-        waitForPresenceFunction(driver, LGLbl);
+        waitForPresenceOfElement( greatKeepGoingLbl);
+        waitForPresenceOfElement( LGLbl);
 
         return greatKeepGoingLbl.isDisplayed() && LGLbl.isDisplayed();
     }
 
     public void clickOnCreateAccountButton(AndroidDriver driver){
-        clickElement(driver, createAccountButton);
+        clickElement(createAccountButton);
     }
 }

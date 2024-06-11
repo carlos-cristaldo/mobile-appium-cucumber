@@ -15,6 +15,7 @@ Feature: K12 App
 
   Scenario Outline: Successful Login as LC
     Given "<user>" is selected
+    And user is in who we are page
     When  login as an LC
     Then user is redirected to dashboard page
     And user is logged out of the app

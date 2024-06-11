@@ -20,6 +20,6 @@ public class ParentPortalBasePage extends PageBase{
     }
 
     public void clickBackButton(AndroidDriver driver){
-        clickElement(driver, goBackButton);
+        clickElement(goBackButton);
     }
 }

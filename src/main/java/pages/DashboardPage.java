@@ -70,7 +70,7 @@ public class DashboardPage extends DashboardPageBase {
 
     private void dismissDoItLater(AndroidDriver driver) {
         try {
-            clickElement(driver, doItLater);
+            clickElement(doItLater);
         }catch (TimeoutException | NoSuchElementException e){
             logger.error(e.getMessage());
         }

@@ -8,11 +8,13 @@ import model.User;
 
 import model.UserData;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.text.RandomStringGenerator;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.lang.reflect.Type;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class Utils {
@@ -66,5 +68,10 @@ public class Utils {
         return  (int)(Math.random() * (max - min + 1)) + min;
     }
 
+    public static String generateRandomPass(int n){
+        int qLetters = n / 2;
+        int qNumbers = n - qLetters;
+        return generateRandomAlphaString(qLetters).concat(generateRandomNumericString(qNumbers)).concat("-*");
+     }
 }
 

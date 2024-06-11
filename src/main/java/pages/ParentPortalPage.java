@@ -5,10 +5,9 @@ import io.appium.java_client.pagefactory.AndroidFindBy;
 import lombok.Getter;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import pages.Base.ParentPortalBasePage;
 
-import static extended.selenium.MobileActions.waitForPresenceFunction;
+import static extended.selenium.MobileActions.waitForPresenceOfElement;
 
 
 @Getter
@@ -22,7 +21,7 @@ public class ParentPortalPage extends ParentPortalBasePage {
     }
 
     public Boolean isOpen(AndroidDriver driver){
-        waitForPresenceFunction(driver, k12HomeLogo);
+        waitForPresenceOfElement( k12HomeLogo);
         return k12HomeLogo.isDisplayed();
     }
 

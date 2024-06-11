@@ -15,6 +15,10 @@ import org.slf4j.Logger;
 import utils.Constants;
 import utils.MyLogger;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.time.Duration;
 import java.util.*;
 
@@ -27,6 +31,36 @@ import static utils.Utils.generateRandomInteger;
 public class MobileActions {
 
     static Logger logger = MyLogger.getLogger();
+
+    private static AndroidDriver driver;
+
+    public static AndroidDriver getDriver(){
+        UiAutomator2Options options;
+        URL url;
+        try {
+            url = new URI(getProperties("local.properties", "appium_server_url")).toURL();
+        } catch (MalformedURLException | URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+
+        if (getProperties("local.properties", "ENV").equals("QA")) {
+
+            options = getOptionsQA();
+        } else {
+            options = getOptionsPROD();
+        }
+
+        driver = new AndroidDriver(
+                url, options
+        );
+
+        driver.setSetting("enforceXPath1",true);
+
+
+        logger.info(driver.toString());
+        return driver;
+
+    }
 
     public static Boolean isClickable(WebDriver driver, WebElement element) {
         try {
@@ -46,7 +80,7 @@ public class MobileActions {
 
     public static Wait waitFor(AndroidDriver driver) {
         return new FluentWait<>(driver)
-                .withTimeout(ofSeconds(18))
+                .withTimeout(ofSeconds(15))
                 .pollingEvery(ofSeconds(3))
                 .ignoring(NoSuchElementException.class);
     }
@@ -65,7 +99,7 @@ public class MobileActions {
                 .setUdid(getProperties("local.properties", "udid"))
                 .setAppPackage("com.k12.onboarding")
                 .setAppActivity("com.k12.onboarding.MainActivity")
-                .setNoReset(true)
+                //.setNoReset(true)
                 .setChromedriverExecutable(getProperties("local.properties", "path_to_chromedriver"))
                 ;
     }
@@ -119,14 +153,14 @@ public class MobileActions {
         logger.info("Switched to = {}", driver.getContext());
     }
 
-    public static void hideKeyboard(WebDriver driver) {
+    public static void hideKeyboard() {
 
         HidesKeyboard hkDriver = (HidesKeyboard) driver;
         hkDriver.hideKeyboard();
     }
 
 
-    public static void scrollDown(AndroidDriver driver) {
+    public static void scrollDown() {
 
         int startX = driver.manage().window().getSize().getWidth() / 2;
         int startY = driver.manage().window().getSize().getHeight() / 2;
@@ -144,6 +178,11 @@ public class MobileActions {
 
     }
 
+    public static void scrollWholePage(){
+        scrollDown();
+        scrollDown();
+    }
+
     public static void scrollToEnd(AndroidDriver driver) {
         boolean canScrollMore;
         do {
@@ -157,13 +196,13 @@ public class MobileActions {
     }
 
 
-    public static void scrollDownUsingUiScrollable(AndroidDriver driver, String element) {
-        // Find a scrollable element using UiSelector
-        WebElement scrollableElement = driver.findElement(AppiumBy.androidUIAutomator(
-                STR."new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().text(\"\{element}\"))"));
+    public static void scrollDownToElement(String element) {
 
-        // Perform the scrolling action
-        scrollableElement.sendKeys("");
+        //WebElement scrollableElement =
+                driver.findElement(AppiumBy.androidUIAutomator(
+                (STR."new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().text(\"\{element}\"))")));
+
+        //scrollableElement.click();
     }
 
 
@@ -188,7 +227,7 @@ public class MobileActions {
     }
 
 
-    public static <T> T waitForPresenceFunction(WebDriver driver, WebElement element) {
+    public static <T> T waitForPresenceOfElement(WebElement element) {
         T output = null;
         try {
             output = (T) waitFor(driver).until(visibilityOf(element));
@@ -196,6 +235,17 @@ public class MobileActions {
             logger.error(e.getMessage());
         }
         return output;
+    }
+
+    public static Boolean isElementVisible( WebElement element){
+        Boolean isPresent = null;
+        try {
+            waitFor(driver).until(visibilityOf(element));
+            isPresent = true;
+        }catch (TimeoutException e){
+            logger.error(e.getMessage());
+        }
+        return isPresent;
     }
 
     public static <T> T waitForPresencesFunction(WebDriver driver, List<WebElement> element) {
@@ -212,19 +262,29 @@ public class MobileActions {
         return (T) waitFor(driver).until(elementToBeClickable(element));
     }
 
-    public static <T> T clickElement(AndroidDriver driver, WebElement element) {
-        waitFor(driver).until(elementToBeClickable(element));
-        element.click();
+    public static <T> T clickElement( WebElement element) {
+        try{
+            waitFor(driver).until(elementToBeClickable(element));
+            element.click();
+        }catch (TimeoutException e){
+            logger.error(e.getMessage());
+        }
+
         return null;
     }
 
-    public static <T> T typeOnElement(AndroidDriver driver, WebElement element, String input, String data) {
-        waitFor(driver).until(presenceOfElementLocated(By.xpath(data)));
-        element.sendKeys(input);
+    public static <T> T typeOnElement(WebElement element, String input) {
+        try {
+            waitFor(driver).until(visibilityOf(element));
+            element.sendKeys(input);
+        }catch (TimeoutException e){
+            logger.error(e.getMessage());
+        }
+
         return null;
     }
 
-    public static void tapByCoordinates(AndroidDriver driver, int x, int y) {
+    public static void tapByCoordinates(int x, int y) {
 
         PointerInput finger = new PointerInput(PointerInput.Kind.TOUCH, "finger");
         Sequence clickSequence = new Sequence(finger, 1);

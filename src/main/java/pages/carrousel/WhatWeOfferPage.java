@@ -6,7 +6,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import pages.Base.PageBase;
 
-import static extended.selenium.MobileActions.waitForPresenceFunction;
+import static extended.selenium.MobileActions.waitForPresenceOfElement;
 import static utils.Utils.forceWait;
 
 @Getter
@@ -20,7 +20,7 @@ public class WhatWeOfferPage extends PageBase {
     }
 
     public String getPageData(WebDriver driver){
-        waitForPresenceFunction(driver, unknowElement);
+        waitForPresenceOfElement(unknowElement);
         forceWait(2000);
         System.out.println(STR."Unknow element text = \{unknowElement.getText()}");
         return unknowElement.getAttribute("bounds");

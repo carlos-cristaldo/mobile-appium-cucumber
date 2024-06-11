@@ -2,13 +2,15 @@ package pages;
 
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.pagefactory.AndroidFindBy;
+import lombok.Getter;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import pages.Base.ParentPortalBasePage;
 
 import static extended.selenium.MobileActions.clickElement;
-import static extended.selenium.MobileActions.waitForPresenceFunction;
+import static extended.selenium.MobileActions.waitForPresenceOfElement;
 
+@Getter
 public class LoginPage extends ParentPortalBasePage {
 
   @AndroidFindBy(uiAutomator = "new UiSelector().className(\"android.widget.TextView\").instance(4)")
@@ -38,16 +40,16 @@ public class LoginPage extends ParentPortalBasePage {
 
 
     public void clickOnLCSelector(AndroidDriver driver){
-        clickElement(driver, lCSelector);
+        clickElement(lCSelector);
     }
 
     public Boolean isOpen(AndroidDriver driver){
-        waitForPresenceFunction(driver, chooseAccontType);
+        waitForPresenceOfElement( chooseAccontType);
         return chooseAccontType.isDisplayed();
     }
 
     public Boolean lCIsSelected(AndroidDriver driver){
-        waitForPresenceFunction(driver, lCLbl);
+        waitForPresenceOfElement(lCLbl);
         return lCLbl.isDisplayed();
     }
 
@@ -59,10 +61,10 @@ public class LoginPage extends ParentPortalBasePage {
     }
 
     public void clickOnLoginButton(AndroidDriver driver){
-        clickElement(driver, loginButton);
+        clickElement(loginButton);
     }
 
     public void clickOnSignUpButton(AndroidDriver driver){
-        clickElement(driver, signUpButton);
+        clickElement(signUpButton);
     }
 }
